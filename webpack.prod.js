@@ -2,7 +2,7 @@ const { merge } = require("webpack-merge");
 const path = require("path");
 const dev = require("./webpack.dev.js");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
+// const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = merge(dev, {
@@ -45,16 +45,16 @@ module.exports = merge(dev, {
 					}
 				}
 			}),
-			new ImageMinimizerPlugin({
-				minimizer: {
-					implementation: ImageMinimizerPlugin.imageminMinify,
-					options: {
-						plugins: [
-							["optipng", { optimizationLevel: 5 }]
-						],
-					},
-				},
-			}),
+			// new ImageMinimizerPlugin({
+			// 	minimizer: {
+			// 		implementation: ImageMinimizerPlugin.imageminMinify,
+			// 		options: {
+			// 			plugins: [
+			// 				["optipng", { optimizationLevel: 5 }]
+			// 			],
+			// 		},
+			// 	},
+			// }),
 		]
 	}
 });
