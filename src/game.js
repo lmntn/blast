@@ -1,24 +1,24 @@
-"use strinc";
+"use strict";
 
-import { Application, Sprite } from "pixi.js";
+import { Application } from "pixi.js";
+import GameScene from "./game.scene";
 
-export default class Game {
-    constructor() {
-        this.app = new Application({
+export default class Game extends Application {
+    constructor(blocksWitdh, blocksHeight) {
+        super({
             background: "#32607d",
             resizeTo: window,
+            resolution: window.devicePixelRatio,
+            autoResize: true
         });
-
-        document.body.appendChild(this.app.view);
+        this.blocksWitdh = blocksWitdh;
+        this.blocksHeight = blocksHeight;
+        this.setup();
     }
 
-    start() {
-        const bunny = Sprite.from('https://pixijs.com/assets/bunny.png');
-
-        bunny.anchor.set(0.5);
-        bunny.x = this.app.screen.width / 2;
-        bunny.y = this.app.screen.height / 2;
-
-        this.app.stage.addChild(bunny);
+    setup() {
+        document.body.appendChild(this.view);
+        this.gameScene = new GameScene(this);
+        this.stage.addChild(this.gameScene);
     }
 }
