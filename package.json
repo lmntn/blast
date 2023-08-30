@@ -9,6 +9,7 @@
   "author": "Sergey Lamantin",
   "license": "ISC",
   "dependencies": {
+    "gsap": "^3.12.2",
     "pixi.js": "^7.2.4"
   },
   "devDependencies": {
