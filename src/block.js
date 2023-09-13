@@ -1,6 +1,6 @@
 "use strict";
 
-import { Container, Sprite } from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 import { gsap } from "gsap";
 import { BLOCK_SIZE } from "./config";
 
@@ -9,8 +9,8 @@ export const Color = ["red", "blue", "purple", "yellow", "green"];
 export class Block extends Container {
     constructor(col, row, color) {
         super();
-        this.row = row;
         this.col = col;
+        this.row = row;
         this.checked = false;
         this.toRemove = false;
         this.color = color || Color[Math.floor(Math.random() * Color.length)];
@@ -25,8 +25,15 @@ export class Block extends Container {
         this.addChild(this.sprite);
     }
 
+    setSprite(color) {
+        this.sprite.alpha = 1;
+        this.color = color || Color[Math.floor(Math.random() * Color.length)];
+        this.sprite.texture =
+            Texture.from(`./assets/img/${this.color}.png`);
+    }
+
     dropTo(position, duration, delay, ease) {
-        gsap.to(this.sprite, {
+        return gsap.to(this.sprite, {
             duration,
             delay,
             ease,

@@ -13,10 +13,11 @@ export default class Board {
         this.margintop = 0;
         this.fallDelay = 0;
         this.matchCount = 0;
+        this.lock = false;
         this.setup();
     }
 
-    bg() {
+    setBackground() {
         const texture = Texture.from('./assets/img/field_background.png');
         const bg = new NineSlicePlane(texture, 100, 100, 100, 100);
         bg.width = this.game.col * BLOCK_SIZE;
@@ -27,40 +28,54 @@ export default class Board {
 
     setup() {
         this.container.scale.set(0.2);
-        this.bg();
+        this.setBackground();
 
         this.blocks = [];
         // this.container.position.set(50, 60);
 
         for (let row = this.game.row - 1; row >= 0; row--) {
             for (let col = 0; col < this.game.col; col++) {
-                const block = new Block(col, row);
-                block.sprite.eventMode = "dynamic";
-                block.sprite.on('pointerdown', () => this.onClick(block));
+                const block = this.createBlock(col, row);
                 this.blocks.push(block);
-                this.container.addChild(block.sprite);
             }
         }
     }
 
+    createBlock(col, row) {
+        let block = new Block(col, row);
+        block.sprite.eventMode = "dynamic";
+        block.sprite.on('pointerdown', () => this.onClick(block));
+        this.container.addChild(block.sprite);
+        return block;
+    }
+
     onClick(block) {
+        console.log(this.blocks.length)
+        if (this.lock) return;
+        
         this.fallDelay = 0;
         this.matchCount = 0;
         this.clickedBlock = block;
         this.setMatchesToRemove(block);
-
+        
         if (this.matchCount < 2) {
             block.toRemove = false;
             block.checked = false;
-            return
-        };
+            return;
+        }
+        
+        this.lock = true;
 
+        this.removeBlocks();
+        this.fallingBlocks();
+    }
+
+    removeBlocks() {
         this.blocks.forEach(block => {
             if (!block.toRemove) return;
             block.sprite.alpha = 0;
-        })
-
-        this.fallingBlocks();
+            this.countOfRemoved++;
+        });
     }
 
     setMatchesToRemove(block) {
@@ -88,40 +103,69 @@ export default class Board {
                 const block = this.getBlock(col, row);
 
                 if (block && block.toRemove) {
-                    this.fallBlocksTo(block);
+                    this.fallBlocksTo(block).then(() => this.addBlocks());
                 }
             }
         }
     }
 
-    fallBlocksTo(emptyBlock) {
-        for (let row = emptyBlock.row; row >= 0; row--) {
-            const fallingBlock = this.getBlock(emptyBlock.col, row);
+    addBlocks() {
+        if (this.lock) {
+            this.blocks.forEach(block => {
+                if (block.toRemove) {
+                    // block.sprite.alpha=1;
+                    block.setSprite();
 
-            if (fallingBlock && !fallingBlock.toRemove) {
+                    const positionTo = {
+                        x: block.col * BLOCK_SIZE,
+                        y: block.row * BLOCK_SIZE
+                    };
 
-                const emptyCol = emptyBlock.col;
-                const emptyRow = emptyBlock.row;
+                    block.sprite.y = -200;
 
-                emptyBlock.toRemove = true;
-                emptyBlock.col = fallingBlock.col;
-                emptyBlock.row = fallingBlock.row;
-
-                fallingBlock.toRemove = false;
-                fallingBlock.col = emptyCol;
-                fallingBlock.row = emptyRow;
-
-                this.fallDelay += 0.005;
-
-                const positionTo = {
-                    x: emptyCol * BLOCK_SIZE,
-                    y: emptyRow * BLOCK_SIZE
-                };
-
-                fallingBlock.dropTo(positionTo, .5, this.fallDelay, "bounce.out");
-
-                return;
-            }
+                    block.dropTo(positionTo, .5, this.fallDelay, "bounce.out")
+                        .then(() => {
+                            block.toRemove = false;
+                            block.checked = false;
+                            this.lock = false;
+                        });
+                }
+            });
         }
+
+        this.lock = false;
+    }
+
+    fallBlocksTo(emptyBlock) {
+        return new Promise(resolve => {
+            for (let row = emptyBlock.row; row >= 0; row--) {
+                const fallingBlock = this.getBlock(emptyBlock.col, row);
+
+                if (fallingBlock && !fallingBlock.toRemove) {
+                    const emptyCol = emptyBlock.col;
+                    const emptyRow = emptyBlock.row;
+
+                    emptyBlock.toRemove = true;
+                    emptyBlock.col = fallingBlock.col;
+                    emptyBlock.row = fallingBlock.row;
+
+                    fallingBlock.toRemove = false;
+                    fallingBlock.col = emptyCol;
+                    fallingBlock.row = emptyRow;
+
+                    this.fallDelay += 0.005;
+
+                    const positionTo = {
+                        x: emptyCol * BLOCK_SIZE,
+                        y: emptyRow * BLOCK_SIZE
+                    };
+
+                    fallingBlock.dropTo(positionTo, .5, this.fallDelay, "bounce.out");
+
+                    return;
+                }
+            }
+            resolve();
+        });
     }
 }
