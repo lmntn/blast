@@ -7,7 +7,7 @@ import {GameScene } from "./scenes/game.scene";
 export default class Game extends Application {
     constructor(col, row) {
         super({
-            background: "#999",
+            background: "#000",
             resizeTo: window,
             resolution: window.devicePixelRatio,
             autoResize: true

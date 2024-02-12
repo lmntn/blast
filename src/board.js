@@ -15,21 +15,10 @@ export default class Board {
         this.setup();
     }
 
-    setBackground() {
-        const texture = Texture.from('./assets/img/field_background.png');
-        const bg = new NineSlicePlane(texture, 100, 100, 100, 100);
-        bg.width = this.game.col * BLOCK_SIZE;
-        bg.height = this.game.row * BLOCK_SIZE;
-        bg.position.set(0, 0)
-        this.container.addChild(bg);
-    }
-
     setup() {
-        this.container.scale.set(0.2);
-        this.setBackground();
+        // this.container.scale.set(0.2);
 
         this.blocks = [];
-        // this.container.position.set(50, 60);
 
         for (let row = this.game.row - 1; row >= 0; row--) {
             for (let col = 0; col < this.game.col; col++) {
@@ -120,7 +109,7 @@ export default class Board {
 
                     block.sprite.y = -200;
 
-                    block.dropTo(positionTo, .5, this.fallDelay, "bounce.out")
+                    block.dropTo(positionTo, 0.5, this.fallDelay, "bounce.out")
                         .then(() => {
                             block.toRemove = false;
                             block.checked = false;
@@ -157,7 +146,7 @@ export default class Board {
                         y: emptyRow * BLOCK_SIZE
                     };
 
-                    fallingBlock.dropTo(positionTo, .5, this.fallDelay, "bounce.out");
+                    fallingBlock.dropTo(positionTo, 0.5, this.fallDelay, "bounce.out");
 
                     return;
                 }

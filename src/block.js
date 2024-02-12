@@ -17,8 +17,8 @@ export class Block extends Container {
 
     setup() {
         this.sprite = Sprite.from(`./assets/img/${this.color}.png`);
-        this.sprite.width = 100;
-        this.sprite.height = 112;
+        this.sprite.width = BLOCK_SIZE;
+        this.sprite.height = BLOCK_SIZE;
         this.sprite.position.set(this.col * BLOCK_SIZE, this.row * BLOCK_SIZE);
         this.addChild(this.sprite);
     }
