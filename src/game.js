@@ -1,15 +1,13 @@
-"use strict";
-
 import { Application } from "pixi.js";
 import * as PIXI from "pixi.js";
-import GameScene from "./game.scene";
 import { gsap } from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
+import {GameScene } from "./scenes/game.scene";
 
 export default class Game extends Application {
     constructor(col, row) {
         super({
-            background: "#32607d",
+            background: "#999",
             resizeTo: window,
             resolution: window.devicePixelRatio,
             autoResize: true
@@ -25,7 +23,7 @@ export default class Game extends Application {
 
     setup() {
         document.body.appendChild(this.view);
-        this.gameScene = new GameScene(this);
-        this.stage.addChild(this.gameScene);
+        const game = new GameScene(this);
+        this.stage.addChild(game);
     }
 }

@@ -1,5 +1,3 @@
-"use strict";
-
 import { Container, Sprite, Texture } from "pixi.js";
 import { gsap } from "gsap";
 import { BLOCK_SIZE } from "./config";

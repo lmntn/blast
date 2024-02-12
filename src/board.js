@@ -1,5 +1,3 @@
-"use strict";
-
 import { Container, NineSlicePlane, Texture } from "pixi.js";
 import { Block } from "./block";
 import { BLOCK_SIZE } from "./config";
@@ -50,7 +48,6 @@ export default class Board {
     }
 
     onClick(block) {
-        console.log(this.blocks.length)
         if (this.lock) return;
         
         this.fallDelay = 0;

@@ -1,9 +1,7 @@
-"use strict";
-
 import { Container } from "pixi.js";
-import Board from "./board";
+import Board from "../board";
 
-export default class GameScene extends Container {
+export class GameScene extends Container {
     constructor(game) {
         super();
         this.game = game;
